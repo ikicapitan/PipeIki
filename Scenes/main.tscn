@@ -1,0 +1,69 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://main.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Casillero.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/tablero.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Sprites/PIPES.png" type="Texture" id=4]
+[ext_resource path="res://Scenes/recorrido_agua.gd" type="Script" id=5]
+
+[node name="main" type="Node" index="0" groups=[
+"main",
+]]
+
+script = ExtResource( 1 )
+cas_x = 10
+cas_y = 8
+casillero = ExtResource( 2 )
+tablerillo = ExtResource( 3 )
+modificador_waypoints_defecto = 20
+
+[node name="cam" type="Camera2D" parent="." index="0"]
+
+position = Vector2( 124.545, 64.98 )
+anchor_mode = 1
+rotating = false
+current = true
+zoom = Vector2( 0.6, 0.6 )
+limit_left = -10000000
+limit_top = -10000000
+limit_right = 10000000
+limit_bottom = 10000000
+limit_smoothed = false
+drag_margin_h_enabled = true
+drag_margin_v_enabled = true
+smoothing_enabled = false
+smoothing_speed = 5.0
+offset_v = 0.0
+offset_h = 0.0
+drag_margin_left = 0.2
+drag_margin_top = 0.2
+drag_margin_right = 0.2
+drag_margin_bottom = 0.2
+editor_draw_screen = true
+editor_draw_limits = false
+editor_draw_drag_margin = false
+
+[node name="recorrido_agua" type="Sprite" parent="." index="1" groups=[
+"r_agua",
+]]
+
+modulate = Color( 0.272295, 0.742188, 0.00869751, 1 )
+position = Vector2( 2.26622, 1.82796 )
+z_index = 1
+texture = ExtResource( 4 )
+vframes = 50
+hframes = 50
+frame = 1231
+script = ExtResource( 5 )
+_sections_unfolded = [ "Animation", "Transform", "Visibility", "Z Index" ]
+
+[node name="Timer" type="Timer" parent="recorrido_agua" index="0"]
+
+process_mode = 1
+wait_time = 0.2
+one_shot = false
+autostart = true
+
+[connection signal="timeout" from="recorrido_agua/Timer" to="recorrido_agua" method="_on_Timer_timeout"]
+
+
