@@ -42,7 +42,8 @@ func restart():
 	path.clear()
 	waypoints.clear()
 	waypoint_actual = 0
-	get_tree().get_nodes_in_group("r_agua")[0].recorrido_actual = 0
+	get_tree().get_nodes_in_group("r_agua")[0].nodo_actual = null
+	get_tree().get_nodes_in_group("r_agua")[0].nodo_anterior = null
 	regenerar_path = false
 	
 
@@ -174,6 +175,7 @@ func generar_tuberia_s_y_t(var newCas, var inicial): #Generamos la primer y ulti
 			path[-1].conectado[1] = true #Fix (lo reagregamos porque sino no lo toma al primero conexiones)
 			get_tree().get_nodes_in_group("r_agua")[0].direccion = 0
 			get_tree().get_nodes_in_group("r_agua")[0].nodo_actual = path[0]
+			get_tree().get_nodes_in_group("r_agua")[0].nodo_anterior = path[0]
 	elif(newCas.b != null): #Hace lo mismo con el resto de direcciones
 		newCas.conectado[1] = true 
 		newCas.get_node("spr_cas").frame = 1 #Img conectado abajo
@@ -182,6 +184,8 @@ func generar_tuberia_s_y_t(var newCas, var inicial): #Generamos la primer y ulti
 			path.append(newCas.b) #Nodo inicial idem anterior
 			path[-1].conectado[0] = true
 			get_tree().get_nodes_in_group("r_agua")[0].direccion = 1
+			get_tree().get_nodes_in_group("r_agua")[0].nodo_actual = path[0]
+			get_tree().get_nodes_in_group("r_agua")[0].nodo_anterior = path[0]
 	elif(newCas.c != null):
 		newCas.conectado[2] = true
 		newCas.get_node("spr_cas").frame = 1 #Img conectado izq
@@ -189,6 +193,8 @@ func generar_tuberia_s_y_t(var newCas, var inicial): #Generamos la primer y ulti
 			path.append(newCas.c) #Nodo inicial
 			path[-1].conectado[3] = true
 			get_tree().get_nodes_in_group("r_agua")[0].direccion = 2
+			get_tree().get_nodes_in_group("r_agua")[0].nodo_actual = path[0]
+			get_tree().get_nodes_in_group("r_agua")[0].nodo_anterior = path[0]
 	elif(newCas.d != null):
 		newCas.conectado[3] = true
 		newCas.get_node("spr_cas").frame = 1 #Img conectado der
@@ -196,6 +202,8 @@ func generar_tuberia_s_y_t(var newCas, var inicial): #Generamos la primer y ulti
 			path.append(newCas.d) #Nodo inicial
 			path[-1].conectado[2] = true
 			get_tree().get_nodes_in_group("r_agua")[0].direccion = 3
+			get_tree().get_nodes_in_group("r_agua")[0].nodo_actual = path[0] #Primer nodo donde comenzara el agua
+			get_tree().get_nodes_in_group("r_agua")[0].nodo_anterior = path[0]
 			
 
 
@@ -243,8 +251,11 @@ func generar_path(): #Creamos camino de S a T
 	partida_generada = true
 	if(regenerar_path): #Reinicio la generacion del path y tablero
 		generar_juego()
+		print("1")
 	else:
 		generar_all_imagenes()
+		path[-1].puede_girar = false
+		
 		
 
 
@@ -285,7 +296,11 @@ func generar_nodo_path():
 		regenerar_path = true
 		return
 	
+	
+	nodo_menor_distancia.puede_girar = true #Al ser tuberia le decimos que puede ser girado
 	path.append(nodo_menor_distancia) #Agregamos habiendo comparado todos, el de menor distancia
+	
+	
 	
 	if(nodo_menor_distancia == waypoints[waypoint_actual] && waypoints[waypoint_actual] != waypoints[-1]):
 		waypoint_actual += 1 #Si alcanzo el waypoint y no llego al final, pasamos al siguiente waypoint

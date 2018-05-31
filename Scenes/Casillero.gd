@@ -6,7 +6,8 @@ var b #Abajo
 var c #Izquierda
 var d #Derecha
 var conectado = [false,false,false,false] #0 ARRIBA, 1 ABAJO, 2 IZQUIERDA, 3 DERECHA
-
+var puede_pasar = [true,true,true,true] #Si no paso aun por la tuberia puede pasar
+var puede_girar = false
 
 func _ready():
 	pass
@@ -55,12 +56,20 @@ func _on_Area2D_mouse_entered():
 	pass
 		
 func _on_Boton_button_down(): #Funcion de presionar mouse (FuryCode gracias)
-	rotation_degrees += 90 #Rota el grafico del casillero
+	if(puede_girar):
+		rotation_degrees += 90 #Rota el grafico del casillero
+		rotar_tubos(conectado) #Rotamos conexiones
 
 
-func rotar_tubos(): #Al rotar 90° las conexiones rotan
-	conectado[0] = conectado[2] #Arriba es izquierda ahora
-	conectado[3] = conectado[0] #Derecha es arriba
-	conectado[1] = conectado[3] #Abajo es derecha
-	conectado[2] = conectado[1] #Izquierda esabajo
+func rotar_tubos(var rotv): #Al rotar 90° las conexiones rotan
+	var provis #Variable provisoria para los intercambios
+	var provis2
+	provis = rotv[0] #Guardamos valor para reemplazar y no perderlo
+	rotv[0] = rotv[2] #Arriba es izquierda ahora
+	provis2 = rotv[3] #Idem a reemplazar
+	rotv[3] = provis #Derecha es arriba
+	provis = rotv[1]
+	rotv[1] = provis2 #Abajo es derecha
+	rotv[2] = provis #Izquierda esabajo
+
 	
