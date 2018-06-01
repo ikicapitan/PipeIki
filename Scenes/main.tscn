@@ -1,21 +1,22 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Casillero.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scenes/tablero.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Sprites/PIPES.png" type="Texture" id=4]
-[ext_resource path="res://Scenes/recorrido_agua.gd" type="Script" id=5]
-[ext_resource path="res://Fonts/I-pixel-u.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://Scenes/tuberia_lado.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Sprites/PIPES.png" type="Texture" id=5]
+[ext_resource path="res://Scenes/recorrido_agua.gd" type="Script" id=6]
+[ext_resource path="res://Fonts/I-pixel-u.ttf" type="DynamicFontData" id=7]
 
 [sub_resource type="DynamicFont" id=1]
 
 size = 48
 use_mipmaps = false
 use_filter = false
-font_data = ExtResource( 6 )
+font_data = ExtResource( 7 )
 _sections_unfolded = [ "Settings" ]
 
-[node name="main" type="Node" index="0" groups=[
+[node name="main" type="Node" groups=[
 "main",
 ]]
 
@@ -24,6 +25,7 @@ cas_x = 10
 cas_y = 8
 casillero = ExtResource( 2 )
 tablerillo = ExtResource( 3 )
+agua_lateral = ExtResource( 4 )
 modificador_waypoints_defecto = 20
 
 [node name="cam" type="Camera2D" parent="." index="0"]
@@ -59,22 +61,23 @@ editor_draw_drag_margin = false
 modulate = Color( 0.272295, 0.742188, 0.00869751, 1 )
 position = Vector2( 2.26622, 1.82796 )
 z_index = 1
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 vframes = 50
 hframes = 50
 frame = 1231
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 _sections_unfolded = [ "Animation", "Transform", "Visibility", "Z Index" ]
 
 [node name="Timer" type="Timer" parent="recorrido_agua" index="0"]
 
 process_mode = 1
-wait_time = 0.2
+wait_time = 0.3
 one_shot = false
-autostart = true
+autostart = false
 
 [node name="GUI" type="CanvasLayer" parent="." index="2"]
 
+editor/display_folded = true
 layer = 1
 offset = Vector2( 0, 0 )
 rotation = 0.0

@@ -57,11 +57,11 @@ func _on_Area2D_mouse_entered():
 		
 func _on_Boton_button_down(): #Funcion de presionar mouse (FuryCode gracias)
 	if(puede_girar):
-		rotation_degrees += 90 #Rota el grafico del casillero
 		rotar_tubos(conectado) #Rotamos conexiones
 
 
 func rotar_tubos(var rotv): #Al rotar 90° las conexiones rotan
+	rotation_degrees += 90 #Rota el grafico del casillero
 	var provis #Variable provisoria para los intercambios
 	var provis2
 	provis = rotv[0] #Guardamos valor para reemplazar y no perderlo
@@ -72,4 +72,8 @@ func rotar_tubos(var rotv): #Al rotar 90° las conexiones rotan
 	rotv[1] = provis2 #Abajo es derecha
 	rotv[2] = provis #Izquierda esabajo
 
+func desordenar(): #Para desordenar el puzzle al azar
+	var azar = randi()%6 #Desordenamos le'puzzle
+	for i in azar:
+		rotar_tubos(conectado)
 	

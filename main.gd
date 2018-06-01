@@ -5,7 +5,9 @@ export (int) var cas_x #cantidad casilleros en X configurable
 export (int) var cas_y #idem pero en Y
 export (PackedScene) var casillero #Escena de los casilleros
 export (PackedScene) var tablerillo #Tablero donde se meten casilleros
+export (PackedScene) var agua_lateral #Agua llenandose de costado
 export (int) var modificador_waypoints_defecto = 20 #Casilleros / MWD = cantidad de waypoints
+
 
 var offset_x #Medida de los casilleros para espaciarlos unos entre otros
 var offset_y #idem
@@ -14,10 +16,10 @@ var waypoints = [] #Puntos intermedios que recorrera el path
 var waypoint_actual = 0
 var partida_generada = false #No empezo ninguna partida aun
 var regenerar_path = false
+var gameover = false #Juego terminado
 
 
 func _ready():
-	
 	var casilleroProvis = casillero.instance() #Crea casillero provisorio
 	add_child(casilleroProvis) #Lo mete en escena
 	offset_x = casilleroProvis.get_node("spr_cas").texture.get_size().x / 5 #Obtiene medida X / 4 frames
@@ -35,6 +37,7 @@ func generar_juego():
 	generar_s_y_t() #Crea el punto Start donde va a salir el agua y donde tiene que llegar
 	generar_waypoints()
 	generar_path()
+	
 
 	
 func restart():
@@ -49,7 +52,6 @@ func restart():
 
 	
 func generar_casilleros(): #Crea casilleros y Tablero
-
 	var newTablero = tablerillo.instance() #Creo un nuevo tablero para meter casilleros nuevos
 	newTablero.name = "Tablero"
 	add_child(newTablero)
@@ -160,6 +162,7 @@ func generar_s_y_t(): #Crea punto Start y Finish
 	#Creo las imagenes de los tubos inicial y final
 	generar_tuberia_s_y_t(newCas, true)
 	generar_tuberia_s_y_t(newCasT, false)
+	get_tree().get_nodes_in_group("r_agua")[0].global_position = newCas.global_position #Posicionamos agua en nodo inicial
 	
 
 	
@@ -251,10 +254,9 @@ func generar_path(): #Creamos camino de S a T
 	partida_generada = true
 	if(regenerar_path): #Reinicio la generacion del path y tablero
 		generar_juego()
-		print("1")
 	else:
 		generar_all_imagenes()
-		path[-1].puede_girar = false
+		desordenar_puzzle()
 		
 		
 
@@ -297,7 +299,6 @@ func generar_nodo_path():
 		return
 	
 	
-	nodo_menor_distancia.puede_girar = true #Al ser tuberia le decimos que puede ser girado
 	path.append(nodo_menor_distancia) #Agregamos habiendo comparado todos, el de menor distancia
 	
 	
@@ -322,3 +323,8 @@ func generar_conexion_tubo():
 		path[-2].conectado[3] = true
 		path[-1].conectado[2] = true
 
+func desordenar_puzzle(): #Desordenamos el pathfinding ordenado para generar el puzzle
+	for i in path:
+		if(!i.is_in_group("S") && !i.is_in_group("T")):
+			i.puede_girar = true
+			i.desordenar()

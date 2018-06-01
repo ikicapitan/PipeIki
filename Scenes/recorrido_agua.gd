@@ -5,8 +5,10 @@ var main
 var nodo_anterior #Tuberia recorrida anterior
 var nodo_actual #Tuberia recorrida actual
 
+
 func _ready():
-	 main = get_tree().get_nodes_in_group("main")[0] #Busco el nodo main para reutilizar mil veces o mas
+	main = get_tree().get_nodes_in_group("main")[0] #Busco el nodo main para reutilizar mil veces o mas
+	agua_start()
 
 func _on_Timer_timeout(): #Test para ver recorrido pathfinding
 	
@@ -29,6 +31,9 @@ func _on_Timer_timeout(): #Test para ver recorrido pathfinding
 			nodo_anterior.puede_pasar[2] = false #Desconectamos asi no vuelve a pasar el agua nunca mas hacia esa direccion por ahi
 			nodo_actual.puede_pasar[3] = false
 		elif(direccion == 3 && nodo_actual.conectado[3] && nodo_actual.d != null && nodo_actual.d.conectado[2] && nodo_actual.puede_pasar[3] && nodo_actual.d.puede_pasar[2]):
+			var newAgua = main.agua_lateral.instance() #Creamos el agua
+			newAgua.rect_position = nodo_actual.global_position #Ponemos el agua en posicion de nodo actual
+			get_tree().get_nodes_in_group("tablero")[0].add_child(newAgua) #Metemos en la escena
 			nodo_anterior = nodo_actual
 			nodo_actual = nodo_actual.d #Der
 			nodo_anterior.puede_pasar[3] = false #Desconectamos asi no vuelve a pasar el agua nunca mas hacia esa direccion por ahi
@@ -42,14 +47,37 @@ func _on_Timer_timeout(): #Test para ver recorrido pathfinding
 				direccion = 2
 			elif(direccion != 3 && nodo_actual.conectado[3] && nodo_actual.d != null && nodo_actual.d.conectado[2] && nodo_actual.d != nodo_anterior && nodo_actual.puede_pasar[3] && nodo_actual.d.puede_pasar[2]):
 				direccion = 3
+			elif(!main.gameover):
+				perdio()
 
 	
 		global_position = nodo_actual.global_position #Mueve el cosito
-		if(nodo_actual.is_in_group("T")): #Si llegue al nodo T
-			get_tree().get_nodes_in_group("winlose")[0].text = "GANASTE" #Muestro msj ganaste
-			yield(get_tree().create_timer(1.0),"timeout") #Espero 3 segundos
-			get_tree().get_nodes_in_group("main")[0].generar_juego() #Creo una partida nueva
-			get_tree().get_nodes_in_group("winlose")[0].text = "" #Quito el msj ganaste
+		if(!main.gameover && nodo_actual.is_in_group("T")): #Si llegue al nodo T
+			gano()
+			
+func perdio():
+	get_node("Timer").stop() #Freno el agua
+	get_tree().get_nodes_in_group("winlose")[0].text = "PERDISTE" #Muestro msj ganaste
+	main.gameover = true #Fin del juego verdadero para que no se repita ni chequee condicion perder o ganar
+	yield(get_tree().create_timer(3.0),"timeout") #Espero 3 segundos
+	get_tree().get_nodes_in_group("main")[0].generar_juego() #Creo una partida nueva
+	get_tree().get_nodes_in_group("winlose")[0].text = "" #Quito el msj ganaste
+	main.gameover = false #reseteo
+	agua_start()
+	
+func gano():
+	get_node("Timer").stop() #Freno el agua
+	get_tree().get_nodes_in_group("winlose")[0].text = "GANASTE" #Muestro msj ganaste
+	main.gameover = true #Fin del juego verdadero para que no se repita ni chequee condicion perder o ganar
+	yield(get_tree().create_timer(3.0),"timeout") #Espero 3 segundos
+	get_tree().get_nodes_in_group("main")[0].generar_juego() #Creo una partida nueva
+	get_tree().get_nodes_in_group("winlose")[0].text = "" #Quito el msj ganaste
+	main.gameover = false #reseteo
+	agua_start()
+	
+func agua_start():
+	yield(get_tree().create_timer(5.0),"timeout")
+	get_node("Timer").start()
 
 
 	
