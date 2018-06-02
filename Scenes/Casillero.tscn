@@ -3,16 +3,20 @@
 [ext_resource path="res://Scenes/Casillero.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/tuberias.png" type="Texture" id=2]
 
-[node name="Casillero" type="Position2D"]
+[node name="Casillero" type="Position2D" index="0"]
 
 script = ExtResource( 1 )
+_sections_unfolded = [ "Transform", "Visibility", "Z Index" ]
 
 [node name="spr_cas" type="Sprite" parent="." index="0"]
 
+position = Vector2( -0.00944901, 0 )
+scale = Vector2( 0.999141, 1 )
 texture = ExtResource( 2 )
+vframes = 5
 hframes = 5
 frame = 3
-_sections_unfolded = [ "Animation" ]
+_sections_unfolded = [ "Animation", "Offset", "Region", "Transform", "Visibility" ]
 
 [node name="Boton" type="TextureButton" parent="." index="1"]
 

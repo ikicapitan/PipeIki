@@ -5,7 +5,7 @@ export (int) var cas_x #cantidad casilleros en X configurable
 export (int) var cas_y #idem pero en Y
 export (PackedScene) var casillero #Escena de los casilleros
 export (PackedScene) var tablerillo #Tablero donde se meten casilleros
-export (PackedScene) var agua_lateral #Agua llenandose de costado
+export (PackedScene) var agua #Agua llenandose de costado
 export (int) var modificador_waypoints_defecto = 20 #Casilleros / MWD = cantidad de waypoints
 
 
@@ -23,7 +23,7 @@ func _ready():
 	var casilleroProvis = casillero.instance() #Crea casillero provisorio
 	add_child(casilleroProvis) #Lo mete en escena
 	offset_x = casilleroProvis.get_node("spr_cas").texture.get_size().x / 5 #Obtiene medida X / 4 frames
-	offset_y = casilleroProvis.get_node("spr_cas").texture.get_size().y #Obtiene medida Y
+	offset_y = casilleroProvis.get_node("spr_cas").texture.get_size().y / 5 #Obtiene medida Y
 	casilleroProvis.queue_free() #Elimina el provisorio
 	generar_juego() #Crea el juego (tambien sirve para restart, etc)
 	
@@ -47,6 +47,7 @@ func restart():
 	waypoint_actual = 0
 	get_tree().get_nodes_in_group("r_agua")[0].nodo_actual = null
 	get_tree().get_nodes_in_group("r_agua")[0].nodo_anterior = null
+	get_tree().get_nodes_in_group("r_agua")[0].nombre_animacion = ""
 	regenerar_path = false
 	
 
